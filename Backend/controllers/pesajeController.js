@@ -100,9 +100,9 @@ const PesajeController = {
           return res.status(404).json({ error: `Lote ${f.lote_id} no encontrado` });
         }
         const previo = previoRows[0];
-        if (previo.estado !== 'APROBADO') {
+        if (!['APROBADO', 'CONDICIONADO'].includes(previo.estado)) {
           return res.status(400).json({
-            error: `El lote ${f.lote_id} no está en estado APROBADO (estado actual: ${previo.estado || 'PENDIENTE'})`
+            error: `El lote ${f.lote_id} no está en estado APROBADO o CONDICIONADO (estado actual: ${previo.estado || 'PENDIENTE'})`
           });
         }
         const { rows: yaExiste } = await pool.query(

@@ -420,13 +420,16 @@ export default function Despacho() {
           setCertForm(CERT_VACIO);
         }
         // Autocompletar peso bruto con peso ajustado de liquidación
-        // y peso tara con la tara del pesaje de entrada del lote
+        // y peso tara con la tara del pesaje de entrada del lote.
+        // Redondeado a 2 decimales: el input tiene step="0.01" y
+        // peso_ajustado viene de la BD con 4 decimales, lo que hacia
+        // que el navegador rechazara el valor silenciosamente al enviar.
         const pesoAjust  = datos.liquidacion?.peso_ajustado;
         const taraPesaje = datos.pesaje?.peso_tara;
         setForm(f => ({
           ...f,
-          ...(pesoAjust  != null && pesoAjust  !== "" ? { peso_bruto_salida: String(pesoAjust)  } : {}),
-          ...(taraPesaje != null && taraPesaje !== "" ? { peso_tara_salida:  String(taraPesaje) } : {}),
+          ...(pesoAjust  != null && pesoAjust  !== "" ? { peso_bruto_salida: Number(pesoAjust).toFixed(2)  } : {}),
+          ...(taraPesaje != null && taraPesaje !== "" ? { peso_tara_salida:  Number(taraPesaje).toFixed(2) } : {}),
         }));
       }
       if (rDesp.ok) setDespachado(await rDesp.json());
@@ -475,8 +478,8 @@ export default function Despacho() {
         setMsg({ tipo: "error", texto: data.error || "Error al registrar despacho." });
         return;
       }
-      setMsg({ tipo: "ok", texto: `Despacho ${data.numero_despacho} registrado exitosamente.` });
-      setDespachado(data);
+      setMsg({ tipo: "ok", texto: `Despacho ${data.despacho.numero_despacho} registrado exitosamente.` });
+      setDespachado(data.despacho);
       cargarLista();
     } finally { setGuardando(false); }
   }

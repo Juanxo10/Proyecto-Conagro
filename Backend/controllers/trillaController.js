@@ -205,16 +205,17 @@ const TrillaController = {
         );
       }
 
-      // Actualizar producto en previos y renombrar el pesaje de entrada al producto resultante
+      // Actualizar el producto resultante en previos (para reportes/consulta).
+      // OJO: no renombrar el pesaje de ENTRADA original — su descripcion/codigo
+      // identifican la materia prima (ej. Paddy Verde) y deben coincidir con los
+      // de la SALIDA de TRILLA_CONSUMO para que el inventario los cancele a cero;
+      // si se renombra solo la entrada, el paddy queda con salidas sin su entrada
+      // correspondiente (stock negativo) y el producto molido queda mezclado con
+      // el peso crudo original.
       const prodFinal = productoResultante(subproductos);
       if (prodFinal) {
         await pool.query(
           'UPDATE previos SET producto = $1 WHERE lote_id = $2',
-          [prodFinal, lote_id]
-        );
-        // Renombrar solo el pesaje original (NO subproductos ni la SALIDA de consumo)
-        await pool.query(
-          "UPDATE pesajes SET descripcion = $1, nombre_producto = $1 WHERE lote_id = $2 AND (transacc IS NULL OR transacc NOT IN ('TRILLA_SUBPROD','TRILLA_CONSUMO'))",
           [prodFinal, lote_id]
         );
       }
@@ -326,16 +327,12 @@ const TrillaController = {
           }
         }
 
-        // Actualizar producto en previos al resultado de la trilla
+        // Actualizar producto en previos al resultado de la trilla.
+        // No renombrar el pesaje de ENTRADA original (ver nota en registrarTrilla).
         const prodFinal = productoResultante(subproductos);
         if (prodFinal) {
           await pool.query(
             'UPDATE previos SET producto = $1 WHERE lote_id = $2',
-            [prodFinal, lote_id]
-          );
-          // Renombrar el pesaje original (NO subproductos ni la SALIDA de consumo)
-          await pool.query(
-            "UPDATE pesajes SET descripcion = $1, nombre_producto = $1 WHERE lote_id = $2 AND (transacc IS NULL OR transacc NOT IN ('TRILLA_SUBPROD','TRILLA_CONSUMO'))",
             [prodFinal, lote_id]
           );
         }

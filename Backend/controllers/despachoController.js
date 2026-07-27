@@ -192,8 +192,22 @@ const DespachoController = {
         [lote_id]
       );
 
+      // Si el lote paso por trilla, lo que se despacha es el producto MOLIDO
+      // (ej. Arroz blanco tipo 1), no el paddy crudo que entro originalmente
+      // — el paddy ya se descuenta del inventario con la SALIDA de
+      // TRILLA_CONSUMO. Usar el codigo/descripcion del pesaje de entrada
+      // aqui haria que el despacho vuelva a restar del paddy (dejandolo en
+      // negativo) y nunca descuente el producto molido realmente enviado.
+      const trillaCheck = await client.query(
+        'SELECT id FROM trillas WHERE lote_id = $1', [lote_id]
+      );
+      const huboTrilla = trillaCheck.rows.length > 0;
+
       if (pesajeOrig.rows.length > 0) {
         const p = pesajeOrig.rows[0];
+        const codigoSalida       = huboTrilla ? null : p.codigo;
+        const descripcionSalida  = huboTrilla ? str(producto) : p.descripcion;
+        const nombreProdSalida   = huboTrilla ? str(producto) : (p.nombre_producto || p.descripcion);
         await client.query(
           `INSERT INTO pesajes (
              tipo_movimiento, transacc, lote_id,
@@ -215,7 +229,7 @@ const DespachoController = {
           [
             str(lote_id),
             str(fecha_despacho), str(hora_despacho),
-            p.codigo, p.descripcion, p.nombre_producto || p.descripcion, p.bodega, p.presentacion,
+            codigoSalida, descripcionSalida, nombreProdSalida, p.bodega, p.presentacion,
             str(placa_salida), str(conductor_salida), str(empresa_transportadora),
             p.propietario, p.nit_propietario,
             numeroDespacho,
