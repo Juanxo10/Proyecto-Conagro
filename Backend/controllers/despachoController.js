@@ -114,23 +114,30 @@ const DespachoController = {
         'SELECT l.id, l.peso_ajustado, p.estado FROM liquidaciones l INNER JOIN previos p ON p.lote_id = l.lote_id WHERE l.lote_id = $1',
         [lote_id]
       );
-      if (!liqCheck.rows.length)
+      if (!liqCheck.rows.length) {
+        await client.query('ROLLBACK');
         return res.status(400).json({ error: 'El lote no está liquidado, no puede despacharse' });
-      if (liqCheck.rows[0].estado !== 'LIQUIDADO')
+      }
+      if (liqCheck.rows[0].estado !== 'LIQUIDADO') {
+        await client.query('ROLLBACK');
         return res.status(400).json({ error: `El lote debe estar en estado LIQUIDADO para despacharse (estado actual: ${liqCheck.rows[0].estado})` });
+      }
 
       // Verificar que no fue despachado ya
       const despCheck = await client.query(
         'SELECT id FROM despachos WHERE lote_id = $1',
         [lote_id]
       );
-      if (despCheck.rows.length)
+      if (despCheck.rows.length) {
+        await client.query('ROLLBACK');
         return res.status(400).json({ error: 'Este lote ya fue despachado' });
+      }
 
       // Validar que peso neto salida no exceda peso ajustado
       const pesoAjustado = parseFloat(liqCheck.rows[0].peso_ajustado) || 0;
       const pesoNetoSal  = parseFloat(peso_neto_salida) || 0;
       if (pesoNetoSal > pesoAjustado + 0.001) {
+        await client.query('ROLLBACK');
         return res.status(400).json({
           error: `Peso neto de salida (${pesoNetoSal} kg) excede el peso ajustado de liquidación (${pesoAjustado} kg)`
         });
