@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 
 import LoginScreen from './pages/login';
 import Index from './pages/index';
@@ -34,24 +34,24 @@ function isTokenValid() {
   return payload.exp * 1000 > Date.now();
 }
 
-// Ruta protegida: requiere sesión activa y token no expirado
-function PrivateRoute({ children }) {
+// Layout persistente: valida sesión y monta el Navbar UNA sola vez.
+// Las páginas se renderizan dentro vía <Outlet/>, así el navbar no
+// se desmonta/remonta (ni parpadea) al cambiar de ruta.
+function ProtectedLayout() {
   if (!isTokenValid()) {
     localStorage.clear();
     return <Navigate to="/" replace />;
   }
-  return children;
+  return <Navbar />;
 }
 
-// Ruta exclusiva para administradores
-function AdminRoute({ children }) {
-  if (!isTokenValid()) {
-    localStorage.clear();
-    return <Navigate to="/" replace />;
-  }
+// Sub-guard para rutas exclusivas de administrador. Se anida DENTRO
+// de ProtectedLayout (no lo reemplaza) para que el Navbar tampoco se
+// remonte al entrar a una sección de admin.
+function AdminGuard() {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   if (user.rol !== 'admin') return <Navigate to="/index" replace />;
-  return children;
+  return <Outlet />;
 }
 
 function App() {
@@ -61,21 +61,25 @@ function App() {
         {/* Login sin navbar */}
         <Route path="/" element={<LoginScreen />} />
 
-        {/* Páginas protegidas CON navbar */}
-        <Route path="/index"            element={<PrivateRoute><Navbar><Index /></Navbar></PrivateRoute>} />
-        <Route path="/panel"            element={<PrivateRoute><Navbar><Panel /></Navbar></PrivateRoute>} />
-        <Route path="/maestro_vehiculos" element={<PrivateRoute><Navbar><MaestroVehiculos /></Navbar></PrivateRoute>} />
-        <Route path="/actualiza_pesaje" element={<PrivateRoute><Navbar><ActualizaPesaje /></Navbar></PrivateRoute>} />
-        <Route path="/previo"           element={<PrivateRoute><Navbar><Previo /></Navbar></PrivateRoute>} />
-        <Route path="/trilla"           element={<PrivateRoute><Navbar><Trilla /></Navbar></PrivateRoute>} />
-        <Route path="/liquidacion"      element={<PrivateRoute><Navbar><Liquidacion /></Navbar></PrivateRoute>} />
-        <Route path="/despacho"         element={<PrivateRoute><Navbar><Despacho /></Navbar></PrivateRoute>} />
+        {/* Páginas protegidas, todas comparten el mismo Navbar montado */}
+        <Route element={<ProtectedLayout />}>
+          <Route path="/index"             element={<Index />} />
+          <Route path="/panel"             element={<Panel />} />
+          <Route path="/maestro_vehiculos" element={<MaestroVehiculos />} />
+          <Route path="/actualiza_pesaje"  element={<ActualizaPesaje />} />
+          <Route path="/previo"            element={<Previo />} />
+          <Route path="/trilla"            element={<Trilla />} />
+          <Route path="/liquidacion"       element={<Liquidacion />} />
+          <Route path="/despacho"          element={<Despacho />} />
 
-        {/* Solo admin puede acceder a inventario y logs */}
-        <Route path="/inventario"       element={<AdminRoute><Navbar><Inventario /></Navbar></AdminRoute>} />
-        <Route path="/logs"             element={<AdminRoute><Navbar><Logs /></Navbar></AdminRoute>} />
+          {/* Solo admin puede acceder a inventario y logs */}
+          <Route element={<AdminGuard />}>
+            <Route path="/inventario" element={<Inventario />} />
+            <Route path="/logs"       element={<Logs />} />
+          </Route>
 
-        <Route path="*" element={<PrivateRoute><Navbar><Index /></Navbar></PrivateRoute>} />
+          <Route path="*" element={<Index />} />
+        </Route>
       </Routes>
     </Router>
   );

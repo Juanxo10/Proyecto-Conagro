@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 
 /* ── SVG Icons ───────────────────────────────────────────── */
 const Icon = ({ name }) => {
@@ -118,7 +118,7 @@ const sections = [
 ];
 
 /* ── Component ───────────────────────────────────────────── */
-export default function Navbar({ children }) {
+export default function Navbar() {
   const [collapsed, setCollapsed] = useState(false);
   const navigate   = useNavigate();
   const location   = useLocation();
@@ -201,7 +201,7 @@ export default function Navbar({ children }) {
           </div>
         </header>
 
-        <div className="content">{children}</div>
+        <div className="content"><Outlet /></div>
       </main>
 
       <style>{`
