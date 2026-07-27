@@ -225,10 +225,14 @@ export default function Navbar() {
         }
 
         /* ── Layout ── */
+        /* Altura fija (no min-height): evita que el sidebar crezca o se
+           encoja segun cuanto contenido tenga cada pagina. El scroll de
+           cada pagina queda contenido dentro de .content. */
         .layout {
           display: flex;
           width: 100%;
-          min-height: 100vh;
+          height: 100vh;
+          overflow: hidden;
           background: #f4f6f8;
         }
 
