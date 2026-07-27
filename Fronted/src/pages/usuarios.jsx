@@ -18,10 +18,12 @@ export default function Usuarios() {
     setLoadingLista(true);
     try {
       const res  = await fetch(`${API}/users`);
+      if (!res.ok) throw new Error(`No se pudo cargar la lista de usuarios (${res.status})`);
       const data = await res.json();
       setUsuarios(Array.isArray(data) ? data : []);
-    } catch {
+    } catch (error) {
       setUsuarios([]);
+      mostrarMsg("error", error.message || "No se pudo cargar la lista de usuarios");
     } finally {
       setLoadingLista(false);
     }
