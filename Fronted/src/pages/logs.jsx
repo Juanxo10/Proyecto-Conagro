@@ -298,7 +298,7 @@ function LogsCSS() {
       /* HEADER */
       .lg-header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 16px; border-bottom: 2px solid #e5e7eb; }
       .lg-label  { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #7c3aed; text-transform: uppercase; margin: 0 0 5px; }
-      .lg-title  { font-size: 28px; font-weight: 800; margin: 0 0 4px; color: #111827; }
+      .lg-title  { font-size: 26px; font-weight: 700; margin: 0 0 4px; color: #111827; }
       .lg-title span { color: #7c3aed; }
       .lg-sub    { color: #6b7280; font-size: 13px; margin: 0; }
       .btn-ref   { padding: 9px 20px; background: white; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; color: #374151; transition: background .15s; flex-shrink: 0; }

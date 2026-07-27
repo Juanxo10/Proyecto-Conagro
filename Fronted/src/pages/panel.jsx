@@ -326,16 +326,16 @@ export default function Panel() {
       </div>
 
       <style>{`
-        .pn-root { font-family:'Inter','Segoe UI',system-ui,sans-serif; padding:24px 28px;
+        .pn-root { font-family: Arial, sans-serif;
           max-width:1200px; margin:0 auto; color:#1e293b; }
 
         /* Header */
         .pn-page-header { display:flex; justify-content:space-between; align-items:center;
           margin-bottom:20px; flex-wrap:wrap; gap:12px; }
-        .pn-page-label  { font-size:.7rem; font-weight:700; letter-spacing:2px;
-          color:#64748b; text-transform:uppercase; margin-bottom:4px; }
-        .pn-page-title  { font-size:1.6rem; font-weight:800; color:#0f4c35; margin:0; }
-        .pn-page-sub    { font-size:.85rem; color:#64748b; margin:4px 0 0; }
+        .pn-page-label  { font-size:11px; font-weight:700; letter-spacing:2px;
+          color:#2e7d32; text-transform:uppercase; margin-bottom:4px; }
+        .pn-page-title  { font-size:26px; font-weight:700; color:#111827; margin:0; }
+        .pn-page-sub    { font-size:13px; color:#6b7280; margin:4px 0 0; }
 
         /* Stats */
         .pn-stats-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr));

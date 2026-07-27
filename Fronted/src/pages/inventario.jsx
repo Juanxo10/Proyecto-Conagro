@@ -470,7 +470,7 @@ function CSS() {
     /* HEADER */
     .inv-header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 16px; border-bottom: 2px solid #e5e7eb; }
     .inv-label  { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #2e7d32; text-transform: uppercase; margin: 0 0 4px; }
-    .inv-title  { font-size: 28px; font-weight: 800; margin: 0 0 4px; color: #111827; }
+    .inv-title  { font-size: 26px; font-weight: 700; margin: 0 0 4px; color: #111827; }
     .inv-title span { color: #2e7d32; }
     .inv-sub    { color: #6b7280; font-size: 13px; margin: 0; }
     .btn-refresh { padding: 9px 20px; background: white; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; color: #374151; flex-shrink: 0; }

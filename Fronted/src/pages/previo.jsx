@@ -632,9 +632,8 @@ export default function Previo() {
 
       {/* ══ ESTILOS ══ */}
       <style>{`
-        .pv-root { font-family:'Inter','Segoe UI',system-ui,sans-serif; padding:24px 28px;
+        .pv-root { font-family: Arial, sans-serif; max-width:1200px; margin:0 auto;
           color:#1e293b; }
-        .pv-root *, .pv-modal * { font-family:'Inter','Segoe UI',system-ui,sans-serif; }
 
         /* Toast */
         .pv-toast { position:fixed; top:20px; right:24px; z-index:9999;
@@ -648,8 +647,8 @@ export default function Previo() {
         /* Header */
         .pv-page-header { display:flex; justify-content:space-between; align-items:center;
           margin-bottom:20px; flex-wrap:wrap; gap:12px; }
-        .pv-page-title  { font-size:1.6rem; font-weight:800; color:#0f4c35; margin:0; }
-        .pv-page-sub    { font-size:.85rem; color:#64748b; margin:4px 0 0; }
+        .pv-page-title  { font-size:26px; font-weight:700; color:#111827; margin:0; }
+        .pv-page-sub    { font-size:13px; color:#6b7280; margin:4px 0 0; }
 
         /* Banner lote */
         .pv-lote-banner { background:linear-gradient(135deg,#0f4c35 0%,#166534 100%);
@@ -667,9 +666,9 @@ export default function Previo() {
         .pv-card { background:#fff; border:1px solid #e2e8f0; border-radius:12px;
           padding:20px 22px; margin-bottom:16px;
           box-shadow:0 1px 4px rgba(0,0,0,.04); }
-        .pv-card-title { font-size:.75rem; font-weight:800; text-transform:uppercase;
-          letter-spacing:.7px; color:#0f4c35; margin-bottom:16px;
-          padding-bottom:10px; border-bottom:2px solid #f0fdf4; }
+        .pv-card-title { font-size:11px; font-weight:700; text-transform:uppercase;
+          letter-spacing:1.5px; color:#2e7d32; margin-bottom:16px;
+          padding-bottom:10px; border-bottom:1px solid #e5e7eb; }
 
         /* Grids */
         .pv-form-grid  { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px 18px; }
@@ -729,11 +728,11 @@ export default function Previo() {
 
         /* Botones */
         .pv-actions { display:flex; gap:10px; margin-top:4px; flex-wrap:wrap; }
-        .pv-btn { padding:10px 22px; border:none; border-radius:8px; font-size:.9rem;
-          font-weight:700; cursor:pointer; transition:all .15s;
+        .pv-btn { padding:10px 24px; border:none; border-radius:7px; font-size:14px;
+          font-weight:600; cursor:pointer; transition:background .15s;
           display:inline-flex; align-items:center; gap:6px; }
         .pv-btn:disabled { opacity:.55; cursor:default; }
-        .pv-btn--primary   { background:#16a34a; color:#fff; }
+        .pv-btn--primary   { background:#2e7d32; color:#fff; }
         .pv-btn--print     { background:#1d4ed8; color:#fff; }
         .pv-btn--secondary { background:#e2e8f0; color:#374151; }
         .pv-btn--buscar    { background:#0369a1; color:#fff; }
