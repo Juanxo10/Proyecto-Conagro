@@ -212,6 +212,16 @@ export default function Navbar() {
           font-family: 'Inter', system-ui, sans-serif;
         }
 
+        /* Blindaje: algunas paginas definen un selector universal
+           "* { font-family: ... }" sin ambito que, al no estar
+           limitado a su propio contenedor, tambien alcanza al navbar
+           (siempre montado) y le cambia la tipografia. Estas reglas
+           con selector de clase tienen mas especificidad que "*" y
+           ganan siempre, sin importar que pagina este activa. */
+        .sidebar, .sidebar *, .topbar, .topbar * {
+          font-family: 'Inter', system-ui, sans-serif;
+        }
+
         :root {
           --sb-w: 230px;
           --sb-bg: #ffffff;
