@@ -18,7 +18,11 @@ window.fetch = function (url, options = {}) {
       };
     }
     return _fetch(url, options).then((res) => {
-      if (res.status === 401) {
+      // El propio login devuelve 401 cuando el usuario/contraseña son
+      // incorrectos — eso no es una sesión expirada, es un error de
+      // credenciales que el formulario debe poder mostrar. Recargar la
+      // página aquí borraba el mensaje de error antes de que se viera.
+      if (res.status === 401 && !url.startsWith('/api/auth/login')) {
         // Token inválido o expirado: cerrar sesión y redirigir al login
         localStorage.clear();
         window.location.replace('/');
