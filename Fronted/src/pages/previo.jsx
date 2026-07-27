@@ -26,6 +26,10 @@ const VEH_VACIO = {
 
 const TIPOS   = ["Camión","Tracto Camión","Volqueta","Furgón","Camioneta","Tractomula","Mini Van","Bus","Otro"];
 const COLORES = ["Blanco","Negro","Rojo","Azul","Gris","Verde","Amarillo","Naranja","Plateado","Café","Beige","Otro"];
+// Mismas opciones que "Tipo de Paddy" en Entrada — deben coincidir exacto
+// con el texto que actualiza_pesaje.jsx usa para auto-detectar el codigo
+// de producto (1AP/1A1) al seleccionar el lote.
+const PRODUCTOS = ["Paddy Verde", "Paddy Seco"];
 
 /* ── Helpers de campo ── */
 const Field = ({ label, children }) => (
@@ -458,7 +462,10 @@ export default function Previo() {
               <FV label="Cédula Conductor"  name="cedula_conductor" value={form.cedula_conductor} onChange={handleChange} placeholder="Número de cédula" />
               <div className="pv-field pv-field--full">
                 <label className="pv-label">Producto</label>
-                <input className="pv-input" name="producto" value={form.producto} onChange={handleChange} placeholder="Nombre del producto" />
+                <select className="pv-input" name="producto" value={form.producto} onChange={handleChange}>
+                  <option value="">Seleccione…</option>
+                  {PRODUCTOS.map((o, i) => <option key={i} value={o}>{o}</option>)}
+                </select>
               </div>
             </div>
           </div>
