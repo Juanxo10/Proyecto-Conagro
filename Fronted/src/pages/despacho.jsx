@@ -562,7 +562,7 @@ export default function Despacho() {
 
           {/* ── HEADER ── */}
           <div className="page-header">
-            <div className="page-label">MÓDULO OPERATIVO</div>
+            <div className="page-eyebrow">MÓDULO OPERATIVO</div>
             <h1 className="title">Despacho <span>de Lotes</span></h1>
             <p className="subtitle-text">
               Registro de salida y despacho de producto procesado — solo lotes liquidados
@@ -1003,7 +1003,7 @@ export default function Despacho() {
 
         /* ── HEADER ── */
         .page-header   { margin-bottom: 24px; }
-        .page-label    { font-size: .7rem; font-weight: 700; letter-spacing: 2px; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
+        .page-eyebrow  { font-size: .7rem; font-weight: 700; letter-spacing: 2px; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
         .title         { font-size: 1.6rem; font-weight: 800; color: #0f4c35; line-height: 1.1; }
         .title span    { color: #16a34a; font-weight: 400; }
         .subtitle-text { font-size: .85rem; color: #64748b; margin-top: 4px; }

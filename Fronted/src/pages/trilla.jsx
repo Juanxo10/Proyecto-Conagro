@@ -337,7 +337,7 @@ export default function Trilla() {
           {/* HEADER */}
           <div className="page-header">
             <div>
-              <p className="page-label">PROCESAMIENTO</p>
+              <p className="page-eyebrow">PROCESAMIENTO</p>
               <h1 className="title">Trilla</h1>
               <p className="subtitle-text">Registro del proceso de trilla y datos de calidad por lote.</p>
             </div>
@@ -795,7 +795,7 @@ export default function Trilla() {
 
         /* HEADER */
         .page-header { padding-bottom: 4px; border-bottom: 2px solid #e5e7eb; }
-        .page-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #2e7d32; text-transform: uppercase; margin: 0 0 6px; }
+        .page-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #2e7d32; text-transform: uppercase; margin: 0 0 6px; }
         .title { font-size: 26px; font-weight: 700; margin: 0 0 4px; color: #111827; }
         .title span { color: #2e7d32; }
         .subtitle-text { color: #6b7280; font-size: 13px; margin: 0; }
