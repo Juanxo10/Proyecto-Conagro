@@ -12,6 +12,7 @@ import Previo from './pages/previo';
 import Trilla from './pages/trilla';
 import Liquidacion from './pages/liquidacion';
 import Despacho    from './pages/despacho';
+import Usuarios    from './pages/usuarios';
 import Navbar from './components/navbar';
 
 // Decodifica el payload del JWT sin librerías externas
@@ -72,10 +73,11 @@ function App() {
           <Route path="/liquidacion"       element={<Liquidacion />} />
           <Route path="/despacho"          element={<Despacho />} />
 
-          {/* Solo admin puede acceder a inventario y logs */}
+          {/* Solo admin puede acceder a inventario, logs y usuarios */}
           <Route element={<AdminGuard />}>
             <Route path="/inventario" element={<Inventario />} />
             <Route path="/logs"       element={<Logs />} />
+            <Route path="/usuarios"   element={<Usuarios />} />
           </Route>
 
           <Route path="*" element={<Index />} />

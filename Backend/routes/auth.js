@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { register, login } = require('../controllers/authController');
+const { register, login, listUsers, updateUser } = require('../controllers/authController');
 const { verifyToken, requireRole } = require('../middleware/auth');
 
 // Rutas
@@ -9,6 +9,10 @@ const { verifyToken, requireRole } = require('../middleware/auth');
 // se registre a sí mismo con rol "admin".
 router.post('/register', verifyToken, requireRole('admin'), register);
 router.post('/login', login);
+
+// Gestión de usuarios — solo administradores
+router.get('/users',      verifyToken, requireRole('admin'), listUsers);
+router.patch('/users/:id',verifyToken, requireRole('admin'), updateUser);
 
 // ←←← ESTA LÍNEA ES LA MÁS IMPORTANTE
 module.exports = router;
