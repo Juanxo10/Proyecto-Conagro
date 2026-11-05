@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Icon from "../Icon";
 
 const API = "/api/vehiculos";
 
@@ -153,7 +154,7 @@ export default function MaestroVehiculos() {
           {/* MENSAJE */}
           {msg.texto && (
             <div className={`msg ${msg.tipo}`}>
-              <span className="msg-icon">{msg.tipo === "ok" ? "✓" : "✕"}</span>
+              <span className="msg-icon">{msg.tipo === "ok" ? <Icon n="check"/> : <Icon n="x"/>}</span>
               {msg.texto}
             </div>
           )}
@@ -240,7 +241,7 @@ export default function MaestroVehiculos() {
                 <span className="count-badge">{vehiculos.length} en total</span>
               </div>
               <div className="search-wrap">
-                <span className="search-icon">⌕</span>
+                <span className="search-icon"><Icon n="search"/></span>
                 <input
                   className="search"
                   placeholder="Buscar por placa, tipo, empresa o conductor..."

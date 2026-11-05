@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import Icon from "../Icon";
 
 /* ──────────────────────────────────────────────────────────────
    FÓRMULAS DE LIQUIDACIÓN
@@ -694,7 +695,7 @@ ${obsV ? `<table><tr><td class="lb">OBSERVACIONES:</td></tr><tr><td style="heigh
           {/* MENSAJE */}
           {msg.texto && (
             <div className={`msg ${msg.tipo}`}>
-              <span className="msg-icon">{msg.tipo === "ok" ? "✓" : "✕"}</span>
+              <span className="msg-icon">{msg.tipo === "ok" ? <Icon n="check"/> : <Icon n="x"/>}</span>
               {msg.texto}
             </div>
           )}
@@ -741,7 +742,7 @@ ${obsV ? `<table><tr><td class="lb">OBSERVACIONES:</td></tr><tr><td style="heigh
 
           {sinCalidad && (
             <div className="alerta-warn">
-              ⚠ El lote <strong>{loteData.previo.lote_id}</strong> no tiene registros de humedad e impureza.
+              <Icon n="alert"/> El lote <strong>{loteData.previo.lote_id}</strong> no tiene registros de humedad e impureza.
               Complete la trilla o el pesaje antes de liquidar.
             </div>
           )}
@@ -755,7 +756,7 @@ ${obsV ? `<table><tr><td class="lb">OBSERVACIONES:</td></tr><tr><td style="heigh
                 {/* Resumen del lote */}
                 <div className="card">
                   <div className="card-title">
-                    📊 Resumen del Lote
+                    <Icon n="chart"/> Resumen del Lote
                     <span className={`badge-estado ${loteData.previo.estado?.toLowerCase()}`}>
                       {loteData.previo.estado}
                     </span>
@@ -787,11 +788,11 @@ ${obsV ? `<table><tr><td class="lb">OBSERVACIONES:</td></tr><tr><td style="heigh
 
                 {/* Calidad */}
                 <div className="card">
-                  <div className="card-title">🧪 Calidad — Solo lectura</div>
+                  <div className="card-title"><Icon n="flask"/> Calidad — Solo lectura</div>
                   <p className="origen-tag">Fuente: {origen}</p>
                   <div style={{ display: "flex", gap: 6, marginBottom: 10, fontSize: 10, flexWrap: "wrap" }}>
-                    <span style={{ background: "#f0fdf4", color: "#15803d", border: "1px solid #86efac", borderRadius: 4, padding: "2px 8px", fontWeight: 700 }}>● CUMPLE</span>
-                    <span style={{ background: "#fef2f2", color: "#dc2626", border: "1px solid #fca5a5", borderRadius: 4, padding: "2px 8px", fontWeight: 700 }}>● NO CUMPLE / FUERA DE RANGO</span>
+                    <span style={{ background: "#f0fdf4", color: "#15803d", border: "1px solid #86efac", borderRadius: 4, padding: "2px 8px", fontWeight: 700 }}><Icon n="checkCircle"/> CUMPLE</span>
+                    <span style={{ background: "#fef2f2", color: "#dc2626", border: "1px solid #fca5a5", borderRadius: 4, padding: "2px 8px", fontWeight: 700 }}><Icon n="xCircle"/> NO CUMPLE / FUERA DE RANGO</span>
                   </div>
                   <div className="calidad-grid">
                     <CalBox label="Humedad (H°)" value={humedad} unit="%" rango={RANGOS.humedad} />
@@ -807,7 +808,7 @@ ${obsV ? `<table><tr><td class="lb">OBSERVACIONES:</td></tr><tr><td style="heigh
 
                 {/* Factores automáticos */}
                 <div className="card">
-                  <div className="card-title">⚙️ Factores Calculados</div>
+                  <div className="card-title"><Icon n="settings"/> Factores Calculados</div>
                   <div className="factor-list">
                     <FactorRow
                       label="Factor Humedad"
@@ -834,7 +835,7 @@ ${obsV ? `<table><tr><td class="lb">OBSERVACIONES:</td></tr><tr><td style="heigh
 
                 {/* Precio editable */}
                 <div className="card">
-                  <div className="card-title">💰 Liquidación</div>
+                  <div className="card-title"><Icon n="coins"/> Liquidación</div>
 
                   <div className="liq-precio-row">
                     <div className="group">
@@ -903,7 +904,7 @@ ${obsV ? `<table><tr><td class="lb">OBSERVACIONES:</td></tr><tr><td style="heigh
                       display:"flex", alignItems:"center", justifyContent:"space-between", gap:12
                     }}>
                       <span style={{ color:"#92400e", fontWeight:600, fontSize:".88rem" }}>
-                        ⚠️ Este lote ya tiene una liquidación registrada. Se muestran los datos actuales.
+                        <Icon n="alert"/> Este lote ya tiene una liquidación registrada. Se muestran los datos actuales.
                       </span>
                       <button
                         onClick={() => setModoEdicion(true)}
@@ -929,7 +930,7 @@ ${obsV ? `<table><tr><td class="lb">OBSERVACIONES:</td></tr><tr><td style="heigh
                   {/* Acciones */}
                   <div className="actions">
                     <button className="btn outline" onClick={handleVerCertificado}>
-                      📋 Ver Certificado de Calidad
+                      <Icon n="clipboard"/> Ver Certificado de Calidad
                     </button>
                     <button
                       className="btn secondary"
@@ -937,17 +938,17 @@ ${obsV ? `<table><tr><td class="lb">OBSERVACIONES:</td></tr><tr><td style="heigh
                       onClick={handleGuardar}
                       style={(yaLiquidado && !modoEdicion) ? { opacity:.5, cursor:"not-allowed" } : {}}
                     >
-                      {guardando ? "Guardando..." : yaLiquidado ? "💾 Actualizar Liquidación" : "💾 Guardar Liquidación"}
+                      {guardando ? "Guardando..." : yaLiquidado ? <><Icon n="save"/> Actualizar Liquidación</> : <><Icon n="save"/> Guardar Liquidación</>}
                     </button>
                     <button className="btn primary" onClick={handleComprobante}>
-                      🖨 Generar Comprobante
+                      <Icon n="printer"/> Generar Comprobante
                     </button>
                   </div>
                 </div>
 
                 {/* Fórmulas de referencia */}
                 <div className="card formulas-card">
-                  <div className="card-title">📐 Fórmulas de Referencia</div>
+                  <div className="card-title"><Icon n="ruler"/> Fórmulas de Referencia</div>
                   <div className="formula-list">
                     <div className="formula-item green">
                       <span className="formula-tag">F. Humedad</span>
@@ -978,7 +979,7 @@ ${obsV ? `<table><tr><td class="lb">OBSERVACIONES:</td></tr><tr><td style="heigh
 
           {/* ── TABLA DE LIQUIDACIONES REGISTRADAS ─────────────────── */}
           <div className="card">
-            <div className="card-title">📋 Liquidaciones Registradas</div>
+            <div className="card-title"><Icon n="clipboard"/> Liquidaciones Registradas</div>
             {cargLista ? (
               <div className="estado-tabla">Cargando liquidaciones...</div>
             ) : lista.length === 0 ? (

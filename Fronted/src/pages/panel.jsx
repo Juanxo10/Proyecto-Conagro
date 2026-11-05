@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import Icon from "../Icon";
 import { useNavigate } from "react-router-dom";
 
 /* Fuente Inter */
@@ -108,7 +109,7 @@ export default function Panel() {
           <div className="pn-modal">
             <div className="pn-modal-header">
               <div className="pn-modal-title">Detalle del Lote — {detalle.lote_id}</div>
-              <button className="pn-modal-close" onClick={() => setDetalle(null)}>✕</button>
+              <button className="pn-modal-close" onClick={() => setDetalle(null)}><Icon n="x"/></button>
             </div>
             <div className="pn-modal-body">
               {detalle._cargando ? (
@@ -124,7 +125,7 @@ export default function Panel() {
                       const current = i === idx;
                       return (
                         <div key={e} className={`pn-step ${done ? "done" : ""} ${current ? "current" : ""}`}>
-                          <div className="pn-step-dot">{done && !current ? "✓" : i + 1}</div>
+                          <div className="pn-step-dot">{done && !current ? <Icon n="check"/> : i + 1}</div>
                           <div className="pn-step-label">{e}</div>
                         </div>
                       );
@@ -195,7 +196,7 @@ export default function Panel() {
                     <div style={{ textAlign: "right", marginTop: 8 }}>
                       <button className="pn-btn pn-btn--primary"
                         onClick={() => { setDetalle(null); navigate(estadoMeta(detalle.lote?.estado).next); }}>
-                        {estadoMeta(detalle.lote?.estado).nextLabel} →
+                        {estadoMeta(detalle.lote?.estado).nextLabel} <Icon n="right"/>
                       </button>
                     </div>
                   )}
@@ -214,7 +215,7 @@ export default function Panel() {
           <p className="pn-page-sub">Estado en tiempo real de todos los lotes · CONAGRO S.A.S</p>
         </div>
         <button className="pn-btn pn-btn--refresh" onClick={cargar} title="Actualizar">
-          ↻ Actualizar
+          <Icon n="refresh"/> Actualizar
         </button>
       </div>
 
@@ -239,7 +240,7 @@ export default function Panel() {
           </svg>
           <input className="pn-search-input" placeholder="Buscar lote, propietario, placa…"
             value={busq} onChange={e => setBusq(e.target.value)} />
-          {busq && <button className="pn-search-clear" onClick={() => setBusq("")}>✕</button>}
+          {busq && <button className="pn-search-clear" onClick={() => setBusq("")}><Icon n="x"/></button>}
         </div>
         <div className="pn-estado-tabs">
           {ESTADOS.map(e => (

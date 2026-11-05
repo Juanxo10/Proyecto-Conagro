@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import Icon from "../Icon";
 
 /* Fuente Inter desde Google Fonts */
 const fontLink = document.createElement("link");
@@ -266,7 +267,7 @@ export default function Previo() {
       {/* ── Toast ── */}
       {msg.texto && (
         <div className={`pv-toast pv-toast--${msg.tipo}`}>
-          <span>{msg.tipo === "ok" ? "✓" : "✕"}</span> {msg.texto}
+          <span>{msg.tipo === "ok" ? <Icon n="check"/> : <Icon n="x"/>}</span> {msg.texto}
         </div>
       )}
 
@@ -278,13 +279,13 @@ export default function Previo() {
               <div className="pv-modal-title">
                 Registrar nuevo camión
               </div>
-              <button className="pv-modal-close" onClick={() => setShowRegVeh(false)}>✕</button>
+              <button className="pv-modal-close" onClick={() => setShowRegVeh(false)}><Icon n="x"/></button>
             </div>
 
             {msgVeh.texto && (
               <div className={`pv-toast pv-toast--${msgVeh.tipo}`}
                 style={{ position:"static", margin:"16px 24px 0", borderRadius:8, animation:"none" }}>
-                <span>{msgVeh.tipo === "ok" ? "✓" : "✕"}</span> {msgVeh.texto}
+                <span>{msgVeh.tipo === "ok" ? <Icon n="check"/> : <Icon n="x"/>}</span> {msgVeh.texto}
               </div>
             )}
 
@@ -390,7 +391,7 @@ export default function Previo() {
                   {placaSearch && (
                     <button type="button" className="pv-search-clear"
                       onClick={() => { setPlacaSearch(""); seleccionarPlaca(""); setShowPlacaDrop(false); }}>
-                      ✕
+                      <Icon n="x"/>
                     </button>
                   )}
                 </div>
@@ -511,7 +512,7 @@ export default function Previo() {
               Imprimir
             </button>
             <button type="button" className="pv-btn pv-btn--secondary" onClick={resetForm}>
-              ↺ Nuevo
+              <Icon n="refresh"/> Nuevo
             </button>
           </div>
         </form>
@@ -572,21 +573,21 @@ export default function Previo() {
                             <div className="pv-acciones-row">
                               {(!p.estado || p.estado === "PENDIENTE" || p.estado === "RECHAZADO" || p.estado === "CONDICIONADO") && (
                                 <button className="pv-btn-acc pv-btn-acc--aprobar" onClick={() => handleEstado(p.id, "APROBADO")} title="Aprobar">
-                                  ✓ Aprobar
+                                  <Icon n="check"/> Aprobar
                                 </button>
                               )}
                               {(!p.estado || p.estado === "PENDIENTE" || p.estado === "APROBADO" || p.estado === "CONDICIONADO") && (
                                 <button className="pv-btn-acc pv-btn-acc--rechazar" onClick={() => handleEstado(p.id, "RECHAZADO")} title="Rechazar">
-                                  ✕ Rechazar
+                                  <Icon n="x"/> Rechazar
                                 </button>
                               )}
                               {(!p.estado || p.estado === "PENDIENTE" || p.estado === "APROBADO" || p.estado === "RECHAZADO") && (
                                 <button className="pv-btn-acc pv-btn-acc--condicionado" onClick={() => handleEstado(p.id, "CONDICIONADO")} title="Condicionado — arroz de calidad regular, seguimiento requerido">
-                                  ⚠ Condicionado
+                                  <Icon n="alert"/> Condicionado
                                 </button>
                               )}
                               <button className="pv-btn-acc pv-btn-acc--imprimir" onClick={() => cargarParaImprimir(p.id)} title="Imprimir previo">
-                                🗘 Imprimir
+                                <Icon n="printer"/> Imprimir
                               </button>
                             </div>
                           </td>

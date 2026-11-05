@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect, useRef, useCallback } from "react";
+import Icon from "../Icon";
 
 export default function ActualizaPesaje() {
 
@@ -569,7 +570,7 @@ ${(d.vlr_kilo || d.kilo || d.kl_compra || d.compra) ? `
           {/* MENSAJE */}
           {msg.texto && (
             <div className={`msg ${msg.tipo}`}>
-              <span className="msg-icon">{msg.tipo === "ok" ? "✓" : "✕"}</span>
+              <span className="msg-icon">{msg.tipo === "ok" ? <Icon n="check"/> : <Icon n="x"/>}</span>
               {msg.texto}
             </div>
           )}
@@ -616,7 +617,7 @@ ${(d.vlr_kilo || d.kilo || d.kl_compra || d.compra) ? `
                             {lotes.map(l => (
                               <li key={l.id} onMouseDown={() => handleLoteSelect(l)}>
                                 <span className="placa-id">{l.lote_id}</span>
-                                {l.estado === "CONDICIONADO" && <span className="lote-cond-badge">⚠ CONDICIONADO</span>}
+                                {l.estado === "CONDICIONADO" && <span className="lote-cond-badge"><Icon n="alert"/> CONDICIONADO</span>}
                                 <span className="placa-info">
                                   {[l.placa, l.propietario, l.producto].filter(Boolean).join(" · ")}
                                 </span>
@@ -629,18 +630,18 @@ ${(d.vlr_kilo || d.kilo || d.kl_compra || d.compra) ? `
                   </div>
                   {form.lote_id && (
                     <div className="lote-badge-row">
-                      <span className="lote-chip">✓ Lote: {form.lote_id}</span>
+                      <span className="lote-chip"><Icon n="check"/> Lote: {form.lote_id}</span>
                       <button
                         className="btn-limpiar"
                         onClick={() => { setForm(prev => ({ ...prev, lote_id: "" })); setLoteSearch(""); setLoteCondicionado(false); }}
                       >
-                        ✕ Quitar lote
+                        <Icon n="x"/> Quitar lote
                       </button>
                     </div>
                   )}
                   {loteCondicionado && (
                     <div className="alerta-condicionado">
-                      ⚠ Este lote está <strong>CONDICIONADO</strong> — calidad regular, requiere seguimiento. Verifique los parámetros de calidad antes de continuar.
+                      <Icon n="alert"/> Este lote está <strong>CONDICIONADO</strong> — calidad regular, requiere seguimiento. Verifique los parámetros de calidad antes de continuar.
                     </div>
                   )}
                 </div>
@@ -823,7 +824,7 @@ ${(d.vlr_kilo || d.kilo || d.kl_compra || d.compra) ? `
 
               <div className="actions">
                 <button className="btn print-btn" onClick={() => handleImprimir(form)} disabled={cargando || !form.codigo}>
-                  🖨 Vista previa / Imprimir
+                  <Icon n="printer"/> Vista previa / Imprimir
                 </button>
                 {modoEditar !== null && (
                   <button className="btn outline" onClick={resetForm} disabled={cargando}>Cancelar</button>
@@ -844,7 +845,7 @@ ${(d.vlr_kilo || d.kilo || d.kl_compra || d.compra) ? `
                 <span className="count-badge">{pesajes.length} en total</span>
               </div>
               <div className="search-wrap">
-                <span className="search-icon">⌕</span>
+                <span className="search-icon"><Icon n="search"/></span>
                 <input
                   className="search"
                   placeholder="Buscar por placa, lote, producto, empresa..."
@@ -897,7 +898,7 @@ ${(d.vlr_kilo || d.kilo || d.kl_compra || d.compra) ? `
                               kilos_seco:  p.pilada,
                               vlr_kilo:    p.kilo,
                               kl_compra:   p.compra,
-                            })}>🖨</button>
+                            })}><Icon n="printer"/></button>
                             <button className="btn-edit"   onClick={() => handleEditar(p)}>Editar</button>
                             <button className="btn-delete" onClick={() => handleEliminar(p)}>Eliminar</button>
                           </td>

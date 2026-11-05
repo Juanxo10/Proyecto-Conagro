@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import Icon from "../Icon";
 import { useNavigate } from "react-router-dom";
 
 /* ── helpers ── */
@@ -161,7 +162,7 @@ export default function Index() {
       <div className="ix-section">
         <div className="ix-section-header">
           <p className="ix-section-title" style={{ margin:0 }}>Actividad reciente</p>
-          <button className="ix-ver-mas" onClick={() => navigate("/panel")}>Ver todos →</button>
+          <button className="ix-ver-mas" onClick={() => navigate("/panel")}>Ver todos <Icon n="right"/></button>
         </div>
         <div className="ix-table-wrap">
           {loading ? (

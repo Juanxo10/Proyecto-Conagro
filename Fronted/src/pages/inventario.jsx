@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect, useMemo } from "react";
+import Icon from "../Icon";
 
 const API = "/api/inventario";
 
@@ -123,7 +124,7 @@ export default function Inventario() {
             <p className="inv-sub">Stock en tiempo real de arroz y subproductos de trilla</p>
           </div>
           <button className="btn-refresh" onClick={cargar} disabled={cargando}>
-            {cargando ? "⟳ Actualizando..." : "↻ Actualizar"}
+            {cargando ? <><Icon n="refresh"/> Actualizando...</> : <><Icon n="refresh"/> Actualizar</>}
           </button>
         </div>
 
@@ -131,7 +132,7 @@ export default function Inventario() {
         {totales && !cargando && (
           <div className="inv-kpis">
             <div className="kpi kpi-green" onClick={() => { setTab("movimientos"); setTipoMov("ENTRADA"); }}>
-              <div className="kpi-icon">↓</div>
+              <div className="kpi-icon"><Icon n="down"/></div>
               <div className="kpi-body">
                 <p className="kpi-lbl">Total Entradas</p>
                 <p className="kpi-val">{fmt(totales.total_entradas_kg)} <span>kg</span></p>
@@ -139,7 +140,7 @@ export default function Inventario() {
               </div>
             </div>
             <div className="kpi kpi-red" onClick={() => { setTab("movimientos"); setTipoMov("SALIDA"); }}>
-              <div className="kpi-icon">↑</div>
+              <div className="kpi-icon"><Icon n="up"/></div>
               <div className="kpi-body">
                 <p className="kpi-lbl">Total Salidas</p>
                 <p className="kpi-val">{fmt(totales.total_salidas_kg)} <span>kg</span></p>
@@ -147,7 +148,7 @@ export default function Inventario() {
               </div>
             </div>
             <div className="kpi kpi-blue kpi-hl" onClick={() => { setTab("stock"); setBusqueda(""); }}>
-              <div className="kpi-icon">◈</div>
+              <div className="kpi-icon"><Icon n="layers"/></div>
               <div className="kpi-body">
                 <p className="kpi-lbl">Stock Actual Total</p>
                 <p className="kpi-val">{fmt(totalStockKg)} <span>kg</span></p>
@@ -155,7 +156,7 @@ export default function Inventario() {
               </div>
             </div>
             <div className="kpi kpi-purple" onClick={() => { setTab("stock"); setBusqueda(""); }}>
-              <div className="kpi-icon">▦</div>
+              <div className="kpi-icon"><Icon n="grid"/></div>
               <div className="kpi-body">
                 <p className="kpi-lbl">Productos</p>
                 <p className="kpi-val-big">{totales.n_productos}</p>
@@ -168,24 +169,24 @@ export default function Inventario() {
         {/* ── TABS ── */}
         <div className="inv-tabs">
           <button className={`inv-tab ${tab === "stock" ? "active" : ""}`} onClick={() => { setTab("stock"); setBusqueda(""); setProdFiltro(null); }}>
-            📦 Stock por producto
+            <Icon n="package"/> Stock por producto
           </button>
           <button className={`inv-tab ${tab === "movimientos" ? "active" : ""}`} onClick={() => setTab("movimientos")}>
-            📋 Movimientos {!cargando && `(${movs.length})`}
+            <Icon n="clipboard"/> Movimientos {!cargando && `(${movs.length})`}
           </button>
         </div>
 
         {/* ── BUSCADOR ── */}
         <div className="inv-filters">
           <div className="search-wrap">
-            <span className="search-ico">⌕</span>
+            <span className="search-ico"><Icon n="search"/></span>
             <input
               className="search-input"
               placeholder={tab === "stock" ? "Buscar producto o bodega..." : "Buscar placa, producto, propietario, lote..."}
               value={busqueda}
               onChange={e => setBusqueda(e.target.value)}
             />
-            {busqueda && <button className="search-clr" onClick={() => setBusqueda("")}>✕</button>}
+            {busqueda && <button className="search-clr" onClick={() => setBusqueda("")}><Icon n="x"/></button>}
           </div>
           {tab === "movimientos" && (
             <>
@@ -193,7 +194,7 @@ export default function Inventario() {
                 {["TODOS","ENTRADA","SALIDA"].map(t => (
                   <button key={t} className={`tipo-btn ${tipoMov === t ? "active" : ""} ${t === "ENTRADA" ? "tb-e" : t === "SALIDA" ? "tb-s" : "tb-a"}`}
                     onClick={() => setTipoMov(t)}>
-                    {t === "TODOS" ? "≡ Todos" : t === "ENTRADA" ? "↓ Entradas" : "↑ Salidas"}
+                    {t === "TODOS" ? <><Icon n="list"/> Todos</> : t === "ENTRADA" ? <><Icon n="down"/> Entradas</> : <><Icon n="up"/> Salidas</>}
                   </button>
                 ))}
               </div>
@@ -206,12 +207,12 @@ export default function Inventario() {
                 <input type="date" value={hasta} onChange={e => setHasta(e.target.value)} />
               </div>
               {(desde || hasta) && (
-                <button className="btn-clr-f" onClick={() => { setDesde(""); setHasta(""); }}>✕ Fechas</button>
+                <button className="btn-clr-f" onClick={() => { setDesde(""); setHasta(""); }}><Icon n="x"/> Fechas</button>
               )}
               {prodFiltro && (
                 <div className="prod-chip">
-                  <span>📦 {prodFiltro.descripcion}</span>
-                  <button onClick={() => setProdFiltro(null)}>✕</button>
+                  <span><Icon n="package"/> {prodFiltro.descripcion}</span>
+                  <button onClick={() => setProdFiltro(null)}><Icon n="x"/></button>
                 </div>
               )}
             </>
@@ -248,7 +249,7 @@ export default function Inventario() {
 function SeccionStock({ productos, subprod, fmt, fmtDec, fmtFecha, onVerMovs }) {
   if (productos.length === 0 && subprod.length === 0) return (
     <div className="inv-empty">
-      <p style={{ fontSize: 48 }}>📦</p>
+      <p style={{ fontSize: 48 }}><Icon n="package"/></p>
       <p style={{ fontWeight: 700, fontSize: 16, color: "#374151" }}>Sin stock registrado</p>
       <p style={{ color: "#9ca3af", fontSize: 13 }}>Los pesajes con tipo ENTRADA aparecerán aquí.</p>
     </div>
@@ -261,7 +262,7 @@ function SeccionStock({ productos, subprod, fmt, fmtDec, fmtFecha, onVerMovs }) 
       {productos.length > 0 && (
         <div>
           <div className="seccion-header">
-            <span className="seccion-icon">🌾</span>
+            <span className="seccion-icon"><Icon n="wheat"/></span>
             <div>
               <h2 className="seccion-title">Productos</h2>
               <p className="seccion-sub">Productos de consumo humano registrados por pesaje</p>
@@ -278,7 +279,7 @@ function SeccionStock({ productos, subprod, fmt, fmtDec, fmtFecha, onVerMovs }) 
       {subprod.length > 0 && (
         <div>
           <div className="seccion-header">
-            <span className="seccion-icon">📦</span>
+            <span className="seccion-icon"><Icon n="package"/></span>
             <div>
               <h2 className="seccion-title">Subproductos de Trilla</h2>
               <p className="seccion-sub">Generados automáticamente al registrar proceso de trilla</p>
@@ -345,7 +346,7 @@ function ProductCard({ r, fmt, fmtDec, fmtFecha, onVerMovs, color }) {
       {/* Entradas / Salidas */}
       <div className="pc-stats">
         <div className="pc-stat pc-stat-e">
-          <span className="pcs-ico">↓</span>
+          <span className="pcs-ico"><Icon n="down"/></span>
           <div>
             <p className="pcs-lbl">Entradas</p>
             <p className="pcs-val">{fmtDec(ent)} kg</p>
@@ -353,7 +354,7 @@ function ProductCard({ r, fmt, fmtDec, fmtFecha, onVerMovs, color }) {
         </div>
         <div className="pc-stat-div" />
         <div className="pc-stat pc-stat-s">
-          <span className="pcs-ico">↑</span>
+          <span className="pcs-ico"><Icon n="up"/></span>
           <div>
             <p className="pcs-lbl">Salidas</p>
             <p className="pcs-val">{fmtDec(sal)} kg</p>
@@ -365,7 +366,7 @@ function ProductCard({ r, fmt, fmtDec, fmtFecha, onVerMovs, color }) {
       <div className="pc-footer">
         <span className="pc-fecha">Últ. mov: {fmtFecha(r.ultimo_movimiento)}</span>
         <button className="pc-btn-movs" style={{ color, borderColor: color + "55" }} onClick={() => onVerMovs(r)}>
-          Ver movimientos →
+          Ver movimientos <Icon n="right"/>
         </button>
       </div>
     </div>
@@ -378,7 +379,7 @@ function ProductCard({ r, fmt, fmtDec, fmtFecha, onVerMovs, color }) {
 function TablaMovimientos({ data, fmt, fmtFecha, tipoMov }) {
   if (data.length === 0) return (
     <div className="inv-empty">
-      <p style={{ fontSize: 48 }}>📋</p>
+      <p style={{ fontSize: 48 }}><Icon n="clipboard"/></p>
       <p style={{ fontWeight: 700, fontSize: 16, color: "#374151" }}>Sin movimientos</p>
       <p style={{ color: "#9ca3af", fontSize: 13 }}>No hay registros con los filtros aplicados.</p>
     </div>
@@ -390,7 +391,7 @@ function TablaMovimientos({ data, fmt, fmtFecha, tipoMov }) {
     <div className="mov-card">
       <div className="mov-head">
         <span className="mov-title">
-          {tipoMov === "ENTRADA" ? "↓ Entradas" : tipoMov === "SALIDA" ? "↑ Salidas" : "≡ Todos los movimientos"}
+          {tipoMov === "ENTRADA" ? <><Icon n="down"/> Entradas</> : tipoMov === "SALIDA" ? <><Icon n="up"/> Salidas</> : <><Icon n="list"/> Todos los movimientos</>}
         </span>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
           <span className={`mov-badge ${tipoMov === "ENTRADA" ? "mb-e" : tipoMov === "SALIDA" ? "mb-s" : "mb-a"}`}>
@@ -426,7 +427,7 @@ function TablaMovimientos({ data, fmt, fmtFecha, tipoMov }) {
                   <td><span className="mov-id">#{m.id}</span></td>
                   <td>
                     <span className={`mov-tipo ${isEnt ? "mt-e" : "mt-s"}`}>
-                      {isEnt ? "↓ Entrada" : "↑ Salida"}
+                      {isEnt ? <><Icon n="down"/> Entrada</> : <><Icon n="up"/> Salida</>}
                     </span>
                   </td>
                   <td>

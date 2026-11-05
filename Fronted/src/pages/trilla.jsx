@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect, useRef, useCallback } from "react";
+import Icon from "../Icon";
 
 const SUBPRODUCTOS_BASE = [
   "Arroz blanco tipo 1",
@@ -313,7 +314,7 @@ export default function Trilla() {
       });
       const d = await res.json();
       if (!res.ok) throw new Error(d.error || "Error al guardar");
-      mostrarMsg("ok", `Trilla del lote ${loteData.previo.lote_id} registrada. Estado → PROCESADO`);
+      mostrarMsg("ok", `Trilla del lote ${loteData.previo.lote_id} registrada. Estado: PROCESADO`);
       setLoteData(null);
       setLoteBusq("");
       setSubproductosT(emptySubproductos());
@@ -346,7 +347,7 @@ export default function Trilla() {
           {/* MENSAJE */}
           {msg.texto && (
             <div className={`msg ${msg.tipo}`}>
-              <span className="msg-icon">{msg.tipo === "ok" ? "✓" : "✕"}</span>
+              <span className="msg-icon">{msg.tipo === "ok" ? <Icon n="check"/> : <Icon n="x"/>}</span>
               {msg.texto}
             </div>
           )}
@@ -410,12 +411,12 @@ export default function Trilla() {
                       Lote: {loteData.previo.lote_id}
                       <span className="badge-pesado">PESADO</span>
                       {loteData.previo.estado === "CONDICIONADO" && (
-                        <span className="badge-condicionado">⚠ CONDICIONADO</span>
+                        <span className="badge-condicionado"><Icon n="alert"/> CONDICIONADO</span>
                       )}
                     </div>
                     {loteData.previo.estado === "CONDICIONADO" && (
                       <div className="alerta-condicionado">
-                        ⚠ Lote <strong>CONDICIONADO</strong> — calidad regular, requiere seguimiento especial. Verifique los parámetros de humedad e impureza antes de procesar.
+                        <Icon n="alert"/> Lote <strong>CONDICIONADO</strong> — calidad regular, requiere seguimiento especial. Verifique los parámetros de humedad e impureza antes de procesar.
                       </div>
                     )}
                     <div className="lote-info-grid">
@@ -468,7 +469,7 @@ export default function Trilla() {
                     </div>
                   </div>
 
-                  {/* ── Layout principal: Formulario ← → Subproductos ── */}
+                  {/* ── Layout principal: Formulario | Subproductos ── */}
                   <div className="trilla-main-grid">
                     {/* Columna izquierda: datos de procesamiento */}
                     <div className="card" style={{ alignSelf: "start" }}>
@@ -604,12 +605,12 @@ export default function Trilla() {
                       <>
                         {_tieneNegativos && (
                           <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 7, padding: "10px 16px", fontSize: 13, color: "#991b1b", fontWeight: 600 }}>
-                            ⚠️ No se permiten valores negativos en los subproductos.
+                            <Icon n="alert"/> No se permiten valores negativos en los subproductos.
                           </div>
                         )}
                         {_excede && !_tieneNegativos && (
                           <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 7, padding: "10px 16px", fontSize: 13, color: "#991b1b", fontWeight: 600 }}>
-                            ⚠️ Total salida ({_ts.toLocaleString("es-CO", {maximumFractionDigits:2})} kg) supera el peso de entrada ({_pe.toLocaleString("es-CO", {maximumFractionDigits:2})} kg). Corrija los valores para poder guardar.
+                            <Icon n="alert"/> Total salida ({_ts.toLocaleString("es-CO", {maximumFractionDigits:2})} kg) supera el peso de entrada ({_pe.toLocaleString("es-CO", {maximumFractionDigits:2})} kg). Corrija los valores para poder guardar.
                           </div>
                         )}
                         <div className="actions">
@@ -618,7 +619,7 @@ export default function Trilla() {
                           </button>
                           <button className="btn primary" disabled={cargando || _bloqueado} onClick={handleGuardar}
                             title={_bloqueado ? "Corrija los errores antes de guardar" : ""}>
-                            {cargando ? "Procesando..." : "✓ Registrar Trilla → PROCESADO"}
+                            {cargando ? "Procesando..." : <><Icon n="check"/> Registrar Trilla <Icon n="right"/> PROCESADO</>}
                           </button>
                         </div>
                       </>
@@ -635,7 +636,7 @@ export default function Trilla() {
               <div className="form-section-header">
                 <div className="form-estado" style={{ color: "#92400e" }}>
                   <div className="estado-dot" style={{ background: "#f59e0b" }} />
-                  <span>✏️ Modificar trilla — solo lotes en estado <strong>PROCESADO</strong> (solo admin)</span>
+                  <span><Icon n="pencil"/> Modificar trilla — solo lotes en estado <strong>PROCESADO</strong> (solo admin)</span>
                 </div>
               </div>
 
@@ -651,7 +652,7 @@ export default function Trilla() {
                       onChange={e => { setEditBusq(e.target.value); setEditOpen(true); }}
                       onFocus={() => setEditOpen(true)}
                     />
-                    <button className="placa-toggle" onClick={() => setEditOpen(v => !v)}>▼</button>
+                    <button className="placa-toggle" onClick={() => setEditOpen(v => !v)}><Icon n="chevron"/></button>
                   </div>
                   {editOpen && (
                     <div className="placa-dropdown">
@@ -750,7 +751,7 @@ export default function Trilla() {
 
                       {/* Motivo de modificación */}
                       <div className="card" style={{ border: "1.5px solid #fbbf24", background: "#fffbeb" }}>
-                        <div className="card-title" style={{ color: "#92400e" }}>⚠️ Motivo de modificación (obligatorio)</div>
+                        <div className="card-title" style={{ color: "#92400e" }}><Icon n="alert"/> Motivo de modificación (obligatorio)</div>
                         <Grp label="Explique el motivo del cambio">
                           <textarea
                             rows={3}
@@ -776,7 +777,7 @@ export default function Trilla() {
                     </button>
                     <button className="btn" style={{ background: "#b45309", color: "white" }} disabled={editCargando || !motivoEdit.trim()} onClick={handleActualizar}
                       title={!motivoEdit.trim() ? "Ingrese el motivo de modificación" : ""}>
-                      {editCargando ? "Guardando..." : "✏️ Guardar cambios"}
+                      {editCargando ? "Guardando..." : <><Icon n="pencil"/> Guardar cambios</>}
                     </button>
                   </div>
                 </>
@@ -956,7 +957,7 @@ const SubproductosTable = ({ subproductos, onChange, kilosProcesados }) => {
       <div style={{ border: "1px solid #bbf7d0", borderRadius: 8, overflow: "hidden" }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead><tr>
-            <th style={thS("#16a34a")}>🌾 Consumo humano</th>
+            <th style={thS("#16a34a")}><Icon n="wheat"/> Consumo humano</th>
             <th style={thKg("#16a34a")}>Kilos (kg)</th>
           </tr></thead>
           <tbody>{bloqueConsumo.map(sp => renderFila(sp))}</tbody>
@@ -971,7 +972,7 @@ const SubproductosTable = ({ subproductos, onChange, kilosProcesados }) => {
       <div style={{ border: "1px solid #fde68a", borderRadius: 8, overflow: "hidden" }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead><tr>
-            <th style={thS("#b45309")}>📦 Subproductos</th>
+            <th style={thS("#b45309")}><Icon n="package"/> Subproductos</th>
             <th style={thKg("#b45309")}>Kilos (kg)</th>
           </tr></thead>
           <tbody>{bloqueOtros.map(sp => renderFila(sp))}</tbody>
@@ -1000,9 +1001,9 @@ const SubproductosTable = ({ subproductos, onChange, kilosProcesados }) => {
               bg={Math.abs(diferencia) < 0.01 ? "#f0fdf4" : diferencia < 0 ? "#fef2f2" : "#fffbeb"}
               sub={
                 pesoEntrada <= 0 ? "Ingrese peso de entrada" :
-                Math.abs(diferencia) < 0.01 ? "✓ Balance cuadrado" :
+                Math.abs(diferencia) < 0.01 ? <><Icon n="check"/> Balance cuadrado</> :
                 diferencia > 0 ? `Faltan ${fmt(diferencia)} kg por asignar` :
-                `⚠️ Excede entrada en ${fmt(Math.abs(diferencia))} kg`
+                `Excede entrada en ${fmt(Math.abs(diferencia))} kg`
               }
             />
             <ResumenFila
@@ -1078,8 +1079,8 @@ const CalRow = ({ label, lab, base }) => {
       <td className="tc">{base || "—"}</td>
       <td className="tc">
         {excede
-          ? <span className="tag-warn">↑ Excede base</span>
-          : <span className="tag-ok">✓ OK</span>
+          ? <span className="tag-warn"><Icon n="up"/> Excede base</span>
+          : <span className="tag-ok"><Icon n="check"/> OK</span>
         }
       </td>
     </tr>

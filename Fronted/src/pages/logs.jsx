@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import Icon from "../Icon";
 
 const API = "/api/logs";
 
@@ -104,25 +105,25 @@ export default function Logs() {
             <p className="lg-sub">Auditoría completa de acciones realizadas por todos los usuarios</p>
           </div>
           <button className="btn-ref" onClick={() => cargar(page)} disabled={loading}>
-            {loading ? "Cargando..." : "↻ Actualizar"}
+            {loading ? "Cargando..." : <><Icon n="refresh"/> Actualizar</>}
           </button>
         </div>
 
         {/* ── KPIs ── */}
         {stats && (
           <div className="lg-kpis">
-            <KpiCard label="Total registros"    value={parseInt(stats.total   || 0).toLocaleString("es-CO")} color="#2e7d32" icon="≡" />
-            <KpiCard label="Hoy"                value={parseInt(stats.hoy     || 0).toLocaleString("es-CO")} color="#1d4ed8" icon="◷" />
-            <KpiCard label="Últimos 7 días"     value={parseInt(stats.semana  || 0).toLocaleString("es-CO")} color="#7c3aed" icon="◈" />
-            <KpiCard label="Usuarios activos"   value={parseInt(stats.usuarios_activos || 0).toLocaleString("es-CO")} color="#0891b2" icon="◉" />
-            <KpiCard label="Errores"            value={parseInt(stats.errores || 0).toLocaleString("es-CO")} color="#dc2626" icon="⚠" />
+            <KpiCard label="Total registros"    value={parseInt(stats.total   || 0).toLocaleString("es-CO")} color="#2e7d32" icon={<Icon n="list"/>} />
+            <KpiCard label="Hoy"                value={parseInt(stats.hoy     || 0).toLocaleString("es-CO")} color="#1d4ed8" icon={<Icon n="clock"/>} />
+            <KpiCard label="Últimos 7 días"     value={parseInt(stats.semana  || 0).toLocaleString("es-CO")} color="#7c3aed" icon={<Icon n="layers"/>} />
+            <KpiCard label="Usuarios activos"   value={parseInt(stats.usuarios_activos || 0).toLocaleString("es-CO")} color="#0891b2" icon={<Icon n="users"/>} />
+            <KpiCard label="Errores"            value={parseInt(stats.errores || 0).toLocaleString("es-CO")} color="#dc2626" icon={<Icon n="alert"/>} />
           </div>
         )}
 
         {/* ── FILTROS ── */}
         <form className="lg-filtros" onSubmit={buscar}>
           <div className="lg-sw">
-            <span className="lg-si">⌕</span>
+            <span className="lg-si"><Icon n="search"/></span>
             <input
               className="lg-search"
               placeholder="Buscar en descripción, ruta, usuario..."
@@ -158,7 +159,7 @@ export default function Logs() {
           </div>
 
           <button type="submit" className="btn-buscar">Filtrar</button>
-          <button type="button" className="btn-limpiar" onClick={limpiar}>✕ Limpiar</button>
+          <button type="button" className="btn-limpiar" onClick={limpiar}><Icon n="x"/> Limpiar</button>
         </form>
 
         {/* ── TABLA ── */}
@@ -175,7 +176,7 @@ export default function Logs() {
             </div>
           ) : logs.length === 0 ? (
             <div className="lg-empty">
-              <p className="le-ico">📋</p>
+              <p className="le-ico"><Icon n="clipboard"/></p>
               <p className="le-title">Sin registros</p>
               <p className="le-sub">No hay actividad con los filtros aplicados.</p>
             </div>
@@ -214,7 +215,7 @@ export default function Logs() {
                 disabled={page <= 1}
                 onClick={() => setPage(p => p - 1)}
               >
-                ← Anterior
+                <Icon n="left"/> Anterior
               </button>
               <span className="pg-info">Página {page} de {pages}</span>
               <button
@@ -222,7 +223,7 @@ export default function Logs() {
                 disabled={page >= pages}
                 onClick={() => setPage(p => p + 1)}
               >
-                Siguiente →
+                Siguiente <Icon n="right"/>
               </button>
             </div>
           )}

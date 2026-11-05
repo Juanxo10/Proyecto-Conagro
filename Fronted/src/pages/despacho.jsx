@@ -1,4 +1,5 @@
 import React from "react";
+import Icon from "../Icon";
 
 /* Fuente Inter desde Google Fonts */
 const fontLink = document.createElement("link");
@@ -222,7 +223,7 @@ function generarTiqueteHTML({ loteData, despacho }) {
 
 <hr class="sep"/>
 
-${diferencia > 0.01 ? `<div class="alerta">⚠ DIFERENCIA ENTRE PESO AJUSTADO Y PESO DESPACHADO: ${fmt(diferencia)} kg</div>` : ""}
+${diferencia > 0.01 ? `<div class="alerta">DIFERENCIA ENTRE PESO AJUSTADO Y PESO DESPACHADO: ${fmt(diferencia)} kg</div>` : ""}
 
 <div class="obs"><strong>Observaciones:</strong><br/>${despacho.observaciones || ""}</div>
 
@@ -577,7 +578,7 @@ export default function Despacho() {
           {/* ── MENSAJE ── */}
           {msg.texto && (
             <div className={`msg ${msg.tipo}`}>
-              <span className="msg-icon">{msg.tipo === "ok" ? "✓" : "!"}</span>
+              <span className="msg-icon">{msg.tipo === "ok" ? <Icon n="check"/> : "!"}</span>
               {msg.texto}
             </div>
           )}
@@ -596,7 +597,7 @@ export default function Despacho() {
                   autoComplete="off"
                 />
                 <button className="combo-toggle" onClick={() => setOpen(o => !o)}>
-                  {buscando ? "…" : "▼"}
+                  {buscando ? "…" : <Icon n="chevron"/>}
                 </button>
               </div>
               {open && (
@@ -640,7 +641,7 @@ export default function Despacho() {
                   </div>
                   {prev?.estado === "CONDICIONADO" && (
                     <div className="alerta-condicionado-desp">
-                      ⚠ Lote <strong>CONDICIONADO</strong> — calidad regular, requiere seguimiento especial. Verifique los parámetros de calidad antes de despachar.
+                      <Icon n="alert"/> Lote <strong>CONDICIONADO</strong> — calidad regular, requiere seguimiento especial. Verifique los parámetros de calidad antes de despachar.
                     </div>
                   )}
                   <div className="info-grid">
@@ -724,7 +725,7 @@ export default function Despacho() {
                             {placaSearch && (
                               <button type="button" className="veh-search-clear"
                                 onClick={() => { setPlacaSearch(""); setVehOk(null); setShowPlacaDrop(false); setForm(f => ({ ...f, placa_salida: "", empresa_transportadora: "", conductor_salida: "", cedula_conductor_salida: "", telefono_conductor_salida: "" })); }}>
-                                ✕
+                                <Icon n="x"/>
                               </button>
                             )}
                           </div>
@@ -847,26 +848,26 @@ export default function Despacho() {
                     {trilla && (
                       <div className="card cert-preview-card">
                         <div className="cert-preview-head">
-                          <span className="cert-preview-ico">📋</span>
+                          <span className="cert-preview-ico"><Icon n="clipboard"/></span>
                           <div>
                             <p className="cert-preview-title">Certificado de Calidad disponible</p>
                             <p className="cert-preview-sub">Lote <strong>{loteData.previo.lote_id}</strong> · Datos tomados del proceso de trilla</p>
                           </div>
                           <button type="button" className="btn-cert-dl" onClick={() => generarCertificadoCalidad()}>
-                            🖨 Generar / Imprimir
+                            <Icon n="printer"/> Generar / Imprimir
                           </button>
                         </div>
                         <div className="cert-preview-data">
-                          {trilla.presentacion  && <span className="cert-chip">📦 {trilla.presentacion}</span>}
-                          {trilla.rendimiento   != null && <span className="cert-chip">⚙ Rend. {trilla.rendimiento}%</span>}
-                          {trilla.humedad_salida != null && <span className="cert-chip">💧 Hum. {trilla.humedad_salida}%</span>}
-                          {trilla.fecha_vencimiento && <span className="cert-chip">📅 Vence: {trilla.fecha_vencimiento}</span>}
+                          {trilla.presentacion  && <span className="cert-chip"><Icon n="package"/> {trilla.presentacion}</span>}
+                          {trilla.rendimiento   != null && <span className="cert-chip"><Icon n="settings"/> Rend. {trilla.rendimiento}%</span>}
+                          {trilla.humedad_salida != null && <span className="cert-chip"><Icon n="droplet"/> Hum. {trilla.humedad_salida}%</span>}
+                          {trilla.fecha_vencimiento && <span className="cert-chip"><Icon n="calendar"/> Vence: {trilla.fecha_vencimiento}</span>}
                         </div>
                       </div>
                     )}
                     {!trilla && (
                       <div className="card cert-nodata-card">
-                        <span className="cert-nodata-ico">⚠</span>
+                        <span className="cert-nodata-ico"><Icon n="alert"/></span>
                         <div>
                           <p className="cert-nodata-title">Sin datos de trilla</p>
                           <p className="cert-nodata-sub">El certificado de calidad se genera desde los datos ingresados en el módulo de Trilla. Este lote aún no tiene datos de trilla registrados.</p>
@@ -917,7 +918,7 @@ export default function Despacho() {
                         Generar Tiquete de Despacho
                       </button>
                       <button className="btn" style={{ background: "#1d4ed8", color: "#fff" }} onClick={() => generarCertificadoCalidad()}>
-                        📋 Certificado de Calidad
+                        <Icon n="clipboard"/> Certificado de Calidad
                       </button>
                     </div>
                   </div>
@@ -968,7 +969,7 @@ export default function Despacho() {
                             onClick={() => imprimirDesdeHistorial(d)}
                             title="Imprimir tiquete"
                           >
-                            {imprimiendoFila === d.id ? "…" : "🖨 Tiquete"}
+                            {imprimiendoFila === d.id ? "…" : <><Icon n="printer"/> Tiquete</>}
                           </button>
                           <button
                             className="print-row-btn"
@@ -987,7 +988,7 @@ export default function Despacho() {
                             }}
                             title="Imprimir certificado de calidad"
                           >
-                            {imprimiendoFila === d.id + "_cert" ? "…" : "📋 Cert."}
+                            {imprimiendoFila === d.id + "_cert" ? "…" : <><Icon n="clipboard"/> Cert.</>}
                           </button>
                         </td>
                       </tr>

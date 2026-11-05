@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Icon from "../Icon";
 
 const API = "/api/auth";
 
@@ -109,7 +110,7 @@ export default function Usuarios() {
           {/* MENSAJE */}
           {msg.texto && (
             <div className={`msg ${msg.tipo}`}>
-              <span className="msg-icon">{msg.tipo === "ok" ? "✓" : "✕"}</span>
+              <span className="msg-icon">{msg.tipo === "ok" ? <Icon n="check"/> : <Icon n="x"/>}</span>
               {msg.texto}
             </div>
           )}
@@ -165,7 +166,7 @@ export default function Usuarios() {
                 <span className="count-badge">{usuarios.length} en total</span>
               </div>
               <div className="search-wrap">
-                <span className="search-icon">⌕</span>
+                <span className="search-icon"><Icon n="search"/></span>
                 <input
                   className="search"
                   placeholder="Buscar por usuario, nombre o rol..."
