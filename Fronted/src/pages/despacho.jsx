@@ -424,12 +424,14 @@ export default function Despacho() {
         // Redondeado a 2 decimales: el input tiene step="0.01" y
         // peso_ajustado viene de la BD con 4 decimales, lo que hacia
         // que el navegador rechazara el valor silenciosamente al enviar.
-        const pesoAjust  = datos.liquidacion?.peso_ajustado;
+        // referencia_kg: con trilla = kg disponibles del producto molido; sin trilla = peso ajustado
+        const pesoRef    = datos.referencia_kg ?? datos.liquidacion?.peso_ajustado;
         const taraPesaje = datos.pesaje?.peso_tara;
+        const tara = taraPesaje != null && taraPesaje !== "" ? Number(taraPesaje) : 0;
         setForm(f => ({
           ...f,
-          ...(pesoAjust  != null && pesoAjust  !== "" ? { peso_bruto_salida: Number(pesoAjust).toFixed(2)  } : {}),
-          ...(taraPesaje != null && taraPesaje !== "" ? { peso_tara_salida:  Number(taraPesaje).toFixed(2) } : {}),
+          ...(pesoRef != null && pesoRef !== "" ? { peso_bruto_salida: (Number(pesoRef) + tara).toFixed(2) } : {}),
+          ...(taraPesaje != null && taraPesaje !== "" ? { peso_tara_salida: tara.toFixed(2) } : {}),
         }));
       }
       if (rDesp.ok) setDespachado(await rDesp.json());
@@ -444,7 +446,7 @@ export default function Despacho() {
     return null;
   })();
 
-  const pesoAjustado = loteData?.liquidacion?.peso_ajustado ?? null;
+  const pesoAjustado = loteData?.referencia_kg ?? loteData?.liquidacion?.peso_ajustado ?? null;
   const diferencia = pesoNeto !== null && pesoAjustado !== null
     ? +(pesoNeto - pesoAjustado).toFixed(2) : null;
 
@@ -812,7 +814,7 @@ export default function Despacho() {
                           <span className="result-val big">{pesoNeto !== null ? fmt(pesoNeto) + " kg" : "—"}</span>
                         </div>
                         <div className="result-row">
-                          <span>Peso ajustado liq.</span>
+                          <span>{loteData?.trilla ? "Disponible a despachar" : "Peso ajustado liq."}</span>
                           <span className="result-val">{fmt(pesoAjustado)} kg</span>
                         </div>
                         {diferencia !== null && (

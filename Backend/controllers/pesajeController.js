@@ -227,10 +227,22 @@ const PesajeController = {
 
   async remove(req, res) {
     try {
+      const { rows: cur } = await pool.query(
+        'SELECT lote_id, transacc FROM pesajes WHERE id = $1', [req.params.id]
+      );
+      if (!cur.length) return res.status(404).json({ error: 'Pesaje no encontrado' });
+      const { lote_id, transacc } = cur[0];
+      // Los movimientos generados por trilla/despacho solo se anulan desde su módulo
+      if (transacc) return res.status(409).json({ error: `Movimiento automático (${transacc}), no se puede eliminar manualmente` });
+      if (lote_id) {
+        const { rows: p } = await pool.query('SELECT estado FROM previos WHERE lote_id = $1', [lote_id]);
+        if (p.length && p[0].estado !== 'PESADO')
+          return res.status(409).json({ error: `El lote ${lote_id} ya avanzó (estado ${p[0].estado}); no se puede eliminar su pesaje` });
+        await pool.query("UPDATE previos SET estado = 'APROBADO' WHERE lote_id = $1", [lote_id]);
+      }
       const { rows } = await pool.query(
         'DELETE FROM pesajes WHERE id = $1 RETURNING id', [req.params.id]
       );
-      if (!rows.length) return res.status(404).json({ error: 'Pesaje no encontrado' });
       res.json({ message: 'Pesaje eliminado correctamente' });
     } catch (err) {
       res.status(500).json({ error: err.message });

@@ -5,6 +5,18 @@ const pool = require('../config/db');
 function str(v) { return (v === null || v === undefined || v === '') ? null : String(v).trim(); }
 function num(v, fb = null) { return (v === null || v === undefined || v === '') ? fb : Number(v); }
 
+/* Kg de `producto` que la trilla del lote generó y aún no se han despachado */
+async function kilosDisponibles(db, lote_id, producto) {
+  const { rows } = await db.query(
+    `SELECT
+       (SELECT COALESCE(SUM(kilos::NUMERIC),0) FROM trilla_subproductos WHERE lote_id=$1 AND subproducto=$2) AS producido,
+       (SELECT COALESCE(SUM(COALESCE(peso_bruto::NUMERIC,0)-COALESCE(peso_tara::NUMERIC,0)),0)
+          FROM pesajes WHERE lote_id=$1 AND transacc='DESPACHO' AND descripcion=$2) AS despachado`,
+    [lote_id, producto]
+  );
+  return Math.max(0, parseFloat(rows[0].producido) - parseFloat(rows[0].despachado));
+}
+
 const DespachoController = {
 
   /* GET /api/despachos/buscar?q=
@@ -51,11 +63,18 @@ const DespachoController = {
       if (!previo) return res.status(404).json({ error: `Lote ${lote_id} no encontrado` });
       const liq = liqRes.rows[0] || null;
       if (!liq) return res.status(400).json({ error: `El lote ${lote_id} no tiene liquidación registrada` });
+      // Si hubo trilla se despacha producto molido: el tope es lo que la trilla produjo
+      // de ese producto (menos lo ya despachado), no el peso ajustado del paddy.
+      let referencia_kg = parseFloat(liq.peso_ajustado) || 0;
+      if (trillaRes.rows[0]) {
+        referencia_kg = await kilosDisponibles(pool, lote_id, previo.producto);
+      }
       res.json({
         previo,
         pesaje:      pesajeRes.rows[0] || null,
         trilla:      trillaRes.rows[0] || null,
         liquidacion: liq,
+        referencia_kg,
       });
     } catch (err) { res.status(500).json({ error: err.message }); }
   },
@@ -133,13 +152,35 @@ const DespachoController = {
         return res.status(400).json({ error: 'Este lote ya fue despachado' });
       }
 
-      // Validar que peso neto salida no exceda peso ajustado
-      const pesoAjustado = parseFloat(liqCheck.rows[0].peso_ajustado) || 0;
+      // Validar tope de peso: con trilla, lo producido del producto; sin trilla, el peso ajustado
+      const trillaCheck = await client.query('SELECT id FROM trillas WHERE lote_id = $1', [lote_id]);
+      const huboTrilla = trillaCheck.rows.length > 0;
+      const prodDesp = str(producto);
+      let tope = parseFloat(liqCheck.rows[0].peso_ajustado) || 0;
+      if (huboTrilla) {
+        if (!prodDesp) {
+          await client.query('ROLLBACK');
+          return res.status(400).json({ error: 'El producto a despachar es obligatorio' });
+        }
+        const { rows: gen } = await client.query(
+          'SELECT 1 FROM trilla_subproductos WHERE lote_id=$1 AND subproducto=$2 AND kilos > 0', [lote_id, prodDesp]
+        );
+        if (!gen.length) {
+          await client.query('ROLLBACK');
+          return res.status(400).json({ error: `La trilla del lote ${lote_id} no generó "${prodDesp}"` });
+        }
+        tope = await kilosDisponibles(client, lote_id, prodDesp);
+      }
+      const pesoAjustado = tope;
       const pesoNetoSal  = parseFloat(peso_neto_salida) || 0;
+      if (pesoNetoSal <= 0) {
+        await client.query('ROLLBACK');
+        return res.status(400).json({ error: 'El peso neto de salida debe ser mayor a 0' });
+      }
       if (pesoNetoSal > pesoAjustado + 0.001) {
         await client.query('ROLLBACK');
         return res.status(400).json({
-          error: `Peso neto de salida (${pesoNetoSal} kg) excede el peso ajustado de liquidación (${pesoAjustado} kg)`
+          error: `Peso neto de salida (${pesoNetoSal} kg) excede lo disponible para despachar (${pesoAjustado} kg)`
         });
       }
 
@@ -169,7 +210,7 @@ const DespachoController = {
           str(placa_salida), str(conductor_salida), str(cedula_conductor_salida),
           str(telefono_conductor_salida), str(empresa_transportadora),
           num(peso_bruto_salida, 0), num(peso_tara_salida, 0), num(peso_neto_salida, 0),
-          num(peso_ajustado_liq), diferencia,
+          num(liqCheck.rows[0].peso_ajustado), diferencia,
           str(producto), str(observaciones), str(usuario),
         ]
       );
@@ -198,16 +239,13 @@ const DespachoController = {
       // TRILLA_CONSUMO. Usar el codigo/descripcion del pesaje de entrada
       // aqui haria que el despacho vuelva a restar del paddy (dejandolo en
       // negativo) y nunca descuente el producto molido realmente enviado.
-      const trillaCheck = await client.query(
-        'SELECT id FROM trillas WHERE lote_id = $1', [lote_id]
-      );
-      const huboTrilla = trillaCheck.rows.length > 0;
-
       if (pesajeOrig.rows.length > 0) {
         const p = pesajeOrig.rows[0];
         const codigoSalida       = huboTrilla ? null : p.codigo;
         const descripcionSalida  = huboTrilla ? str(producto) : p.descripcion;
         const nombreProdSalida   = huboTrilla ? str(producto) : (p.nombre_producto || p.descripcion);
+        // Las salidas de trilla viven en la bodega SUBPRODUCTOS (donde entraron)
+        const bodegaSalida = huboTrilla ? 'SUBPRODUCTOS' : p.bodega;
         await client.query(
           `INSERT INTO pesajes (
              tipo_movimiento, transacc, lote_id,
@@ -229,7 +267,7 @@ const DespachoController = {
           [
             str(lote_id),
             str(fecha_despacho), str(hora_despacho),
-            codigoSalida, descripcionSalida, nombreProdSalida, p.bodega, p.presentacion,
+            codigoSalida, descripcionSalida, nombreProdSalida, bodegaSalida, p.presentacion,
             str(placa_salida), str(conductor_salida), str(empresa_transportadora),
             p.propietario, p.nit_propietario,
             numeroDespacho,

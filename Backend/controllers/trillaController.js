@@ -19,6 +19,21 @@ function productoResultante(subproductos) {
   return lista.reduce((max, sp) => sp.kilos > max.kilos ? sp : max).nombre;
 }
 
+// Valida subproductos: sin negativos y sin producir más kilos que los procesados.
+function validarSubproductos(subproductos, kilosProcesados) {
+  if (!Array.isArray(subproductos)) return null;
+  let total = 0;
+  for (const sp of subproductos) {
+    const k = parseFloat(sp.kilos) || 0;
+    if (k < 0) return `El subproducto "${sp.subproducto}" tiene kilos negativos`;
+    total += k;
+  }
+  const kp = parseFloat(kilosProcesados);
+  if (kp > 0 && total > kp + 0.5)
+    return `Los subproductos suman ${total} kg y superan los kilos procesados (${kp} kg)`;
+  return null;
+}
+
 const TrillaController = {
 
   /* GET /api/trillas/lotes-pesados?q= */
@@ -107,6 +122,9 @@ const TrillaController = {
         return res.status(400).json({
           error: `El lote debe estar en estado PESADO para trilla (estado actual: ${previoRows[0].estado})`
         });
+
+      const errSub = validarSubproductos(subproductos, kilos_procesados);
+      if (errSub) return res.status(400).json({ error: errSub });
 
       const { rows: existing } = await pool.query(
         'SELECT id FROM trillas WHERE lote_id = $1', [lote_id]
@@ -251,6 +269,12 @@ const TrillaController = {
       }
 
       const modificado_por = req.user.usuario;
+
+      const errSub = validarSubproductos(subproductos, kilos_procesados);
+      if (errSub) return res.status(400).json({ error: errSub });
+      const { rows: desp } = await pool.query('SELECT 1 FROM despachos WHERE lote_id = $1', [lote_id]);
+      if (desp.length)
+        return res.status(409).json({ error: `El lote ${lote_id} ya fue despachado, no se puede modificar la trilla` });
 
       // Guardar kilos_resultado_original solo en la primera modificación
       const { rows: currentRows } = await pool.query(
